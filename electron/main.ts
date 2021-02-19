@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, globalShortcut } from 'electron'
 import * as path from 'path'
 import * as url from 'url'
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
@@ -10,6 +10,7 @@ function createWindow () {
     width: 1100,
     height: 700,
     backgroundColor: '#191622',
+    alwaysOnTop: true,
     webPreferences: {
       nodeIntegration: true
     }
@@ -32,6 +33,15 @@ function createWindow () {
   })
 }
 
+function toggleDevTools ():void {
+  // eslint-disable-next-line no-unused-expressions
+  mainWindow?.webContents.toggleDevTools()
+}
+
+function createShortcuts () {
+  globalShortcut.register('CmdorCtrl+J', toggleDevTools)
+}
+
 app.on('ready', createWindow)
   .whenReady()
   .then(() => {
@@ -44,4 +54,5 @@ app.on('ready', createWindow)
         .catch((err) => console.log('An error occurred: ', err))
     }
   })
+  .then(createShortcuts)
 app.allowRendererProcessReuse = true
